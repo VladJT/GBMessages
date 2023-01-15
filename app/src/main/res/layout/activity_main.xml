@@ -4,8 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center|top"
+    android:orientation="vertical"
     android:padding="12dp"
     tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/banner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.sergivonavi.materialbanner.Banner
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#CDD4FF"
+            android:visibility="gone"
+            app:buttonLeftText="Dismiss"
+            app:buttonRightText="Turn on wifi"
+            app:buttonsRippleColor="@color/purple_200"
+            app:icon="@drawable/baseline_notifications_active_24"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lineColor="@color/purple_700"
+            app:lineOpacity="0.8"
+            app:messageText="You have lost connection to the Internet." />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView_info"
@@ -15,13 +41,13 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/banner_layout" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_toast"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="4dp"
         android:text="Toast"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +57,7 @@
         android:id="@+id/button_snackbar"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="4dp"
         android:text="SnackBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,10 +67,51 @@
         android:id="@+id/button_dialog"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="4dp"
         android:text="Dialog window"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_snackbar" />
+
+    <Button
+        android:id="@+id/button_dialog_fragment"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="Fragment Dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_dialog" />
+
+    <Button
+        android:id="@+id/button_dialog_bottom_sheet"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="Bottom-Sheet Dialog"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_dialog_fragment" />
+
+    <Button
+        android:id="@+id/button_notification"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="Notification"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_dialog_bottom_sheet" />
+
+    <Button
+        android:id="@+id/button_banner"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:text="Banner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_notification" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
