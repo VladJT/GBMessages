@@ -1,18 +1,29 @@
 package jt.projects.gbmessages
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.RenderEffect
+import android.graphics.Shader
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.util.Log
 import android.view.Gravity
+import android.view.View
+import android.view.ViewTreeObserver
+import android.view.ViewTreeObserver.OnPreDrawListener
+import android.view.animation.AnticipateInterpolator
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -23,7 +34,7 @@ import jt.projects.gbmessages.databinding.CustomToastBinding
 
 class MainActivity : AppCompatActivity(), IInformative {
 
-    var counter = 0
+    private var counter = 0
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var bindingToastBinding: CustomToastBinding
@@ -36,11 +47,24 @@ class MainActivity : AppCompatActivity(), IInformative {
         this.setInfo(message)
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    override fun setBlurEffect(isBlur: Boolean) {
+        val blurEffect = RenderEffect.createBlurEffect(15f, 0f, Shader.TileMode.MIRROR)
+        if(isBlur) {
+            binding.root.setRenderEffect(blurEffect)
+        }else{
+            binding.root.setRenderEffect(null)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+
+        showSplashScreen()
 
         initButtonToast()
         initSnackBar()
@@ -51,6 +75,45 @@ class MainActivity : AppCompatActivity(), IInformative {
         initBanner()
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    private fun showSplashScreen() {
+        var isHideSplashScreen = false
+        object : CountDownTimer(1000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                Log.d("@@@", "onTick: $millisUntilFinished")
+            }
+
+            override fun onFinish() {
+                isHideSplashScreen = true
+            }
+        }.start()
+
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            val slideLeft = ObjectAnimator.ofFloat(
+                splashScreenView,
+                View.TRANSLATION_X,
+                0f,
+                -splashScreenView.height.toFloat()
+            )
+            slideLeft.duration = 500L
+            slideLeft.doOnEnd { splashScreenView.remove() }
+            slideLeft.start()
+        }
+
+        val content: View = findViewById(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (isHideSplashScreen) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            })
+    }
+
     /**
      * 1. Toast
      */
@@ -58,9 +121,9 @@ class MainActivity : AppCompatActivity(), IInformative {
         bindingToastBinding = CustomToastBinding.inflate(layoutInflater)
         bindingToastBinding.customToastText.text = "Hello, custom toast!"
         val t = Toast(this).apply {
-            setGravity(Gravity.CENTER_HORIZONTAL, 0, 80);
-            setDuration(Toast.LENGTH_SHORT);
-            setView(bindingToastBinding.root);
+            setGravity(Gravity.BOTTOM, 0, 80)
+            duration = Toast.LENGTH_SHORT
+            view = bindingToastBinding.root
         }
 
         binding.buttonToast.setOnClickListener {
@@ -109,8 +172,10 @@ class MainActivity : AppCompatActivity(), IInformative {
     /**
      * 4. FragmentDialog НЕ исчезает при повороте экрана!
      */
+    @RequiresApi(Build.VERSION_CODES.S)
     private fun initFragmentDialog() {
         binding.buttonDialogFragment.setOnClickListener {
+            setBlurEffect(true)
             MyFragmentDialog()
                 .show(supportFragmentManager, MyFragmentDialog.TAG)
         }

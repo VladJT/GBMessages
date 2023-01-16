@@ -32,4 +32,9 @@ class MyFragmentDialog : DialogFragment() {
             .setCancelable(false)
             .create()
     }
+
+    override fun onDestroy() {
+        info?.setBlurEffect(false)
+        super.onDestroy()
+    }
 }

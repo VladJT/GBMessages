@@ -13,6 +13,8 @@ class MyBottomSheetFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentBottomSheetBinding? = null
     private val binding get() = _binding!!
 
+    private var info: IInformative? = null
+
     companion object {
         const val TAG = "MyBottomSheetFragment"
     }
@@ -22,12 +24,14 @@ class MyBottomSheetFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        info = context as? IInformative
         _binding = FragmentBottomSheetBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        info?.setBlurEffect(true)
         binding.imageViewBottomSheet.setOnClickListener {
             Toast.makeText(requireContext(), "Cool!", Toast.LENGTH_SHORT).show()
             dismiss()
@@ -35,6 +39,7 @@ class MyBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     override fun onDestroy() {
+        info?.setBlurEffect(false)
         _binding = null
         super.onDestroy()
     }
